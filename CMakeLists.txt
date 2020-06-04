@@ -10,3 +10,7 @@ endif()
 
 add_executable(hello_world main.cpp)
 target_compile_features(hello_world PRIVATE cxx_lambda_init_captures)
+
+enable_testing()
+add_executable(tester tester.cpp)
+add_test(Tester tester)
