@@ -1,15 +1,17 @@
-dist: trusty
-sudo: false
+dist: focal
+sudo: true
 language: cpp
+compiler:
+  - gcc
 
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-5
+install:
+  - pip install --user conan
+  - conan profile new default --detect
+  - conan profile update settings.compiler.libcxx=libstdc++11 default
 
 script:
-  - CXX=/usr/bin/g++-5 CC=/usr/bin/gcc-5 cmake .
+  - mkdir build && cd build
+  - conan install ..
+  - cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
   - cmake --build . -- -j2
   - ctest -j2

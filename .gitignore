@@ -1,2 +1,5 @@
-bld
+cmake-build-*
+build/
+.idea/
+bld/
 a.out

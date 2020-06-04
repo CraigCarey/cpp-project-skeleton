@@ -1,17 +1,19 @@
-image:
-  - Visual Studio 2017
+version: 1.0.{build}
 
-clone_folder: c:\projects\source
+platform:
+  - x64
+
+install:
+  - cmd: echo "Downloading conan..."
+  - cmd: set PATH=%PATH%;%PYTHON%/Scripts/
+  - cmd: pip.exe install conan
+  - cmd: conan user # Create the conan data directory
+  - cmd: conan --version
+  - cmd: cmake --version
 
 build_script:
-- cmd: >-
-    mkdir build
-
-    cd build
-
-    cmake c:\projects\source -G "Visual Studio 15"
-
-    cmake --build . --config "Debug"
-
-test_script:
-- cmd: ctest -C debug
+  - cmd: mkdir build
+  - cmd: conan install . -o gtest:shared=True
+  - cmd: cd build
+  - cmd: cmake ../ -DBUILD_TEST=TRUE  -G "Visual Studio 14 2015 Win64"
+  - cmd: cmake --build . --config Release
