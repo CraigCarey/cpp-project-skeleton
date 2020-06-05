@@ -11,7 +11,6 @@ A basic project outline with some helpful tooling:
 - GTest
 
 ## TODO
-- [ ] Get Conan working in Travis with both gcc and clang
 - [ ] MacOS CI
 - [ ] Test coverage reports
 - [ ] Integrate sanitizers

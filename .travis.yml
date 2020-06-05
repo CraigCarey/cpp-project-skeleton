@@ -1,8 +1,9 @@
+os: linux
 dist: focal
-sudo: true
 language: cpp
 compiler:
   - gcc
+  - clang
 
 install:
   - pip install --user conan
