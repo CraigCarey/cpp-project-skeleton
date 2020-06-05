@@ -8,14 +8,15 @@ A basic project outline with some helpful tooling:
 - Appveyor (Windows) CI
 - Conan package management
 - CTest
+- GTest
 
 ## TODO
-- Get Conan working in Travis with both gcc and clang
-- GTest
-- Test coverage reports
-- Integrate sanitizers
-- Get Conan working in Appveyor
-- integrate include-what-you-use (or similar)
+- [ ] Get Conan working in Travis with both gcc and clang
+- [ ] MacOS CI
+- [ ] Test coverage reports
+- [ ] Integrate sanitizers
+- [ ] Integrate include-what-you-use (or similar)
+- [ ] Integrate Sonarqube (or similar)
 
 ### Conan Setup
 
@@ -25,7 +26,6 @@ pip install conan
 ```
 
 If you are using GCC compiler >= 5.1, Conan will set the compiler.libcxx to the old ABI for backwards compatibility. You can change this with the following commands:
-
 ```bash
 conan profile new default --detect  # Generates default profile detecting GCC and sets old ABI
 conan profile update settings.compiler.libcxx=libstdc++11 default  # Sets libcxx to C++11 ABI
@@ -33,22 +33,23 @@ conan profile update settings.compiler.libcxx=libstdc++11 default  # Sets libcxx
 
 ```bash
 mkdir build && cd build
-conan install ..
+conan install .. --build missing
 
 # alternatively
-conan install . -s build_type=Debug --install-folder=cmake-build-debug
-conan install . -s build_type=Release --install-folder=cmake-build-release
+conan install . -s build_type=Debug --install-folder=cmake-build-debug --build missing
+conan install . -s build_type=Release --install-folder=cmake-build-release --build missing
 ```
 
 ### Building and Testing
 
 ```bash
 mkdir build && cd build
-conan install ..
+conan install .. --build missing
 
 # (Linux, mac)
-$ cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
+$ cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
 $ cmake --build .
+$ make VERBOSE=1  # alternatively
 
 # (win)
 $ cmake .. -G "Visual Studio 16"

@@ -11,7 +11,7 @@ install:
 
 script:
   - mkdir build && cd build
-  - conan install ..
+  - conan install .. --build missing
   - cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
   - cmake --build . -- -j2
   - ctest -j2

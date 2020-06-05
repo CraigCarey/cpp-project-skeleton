@@ -13,7 +13,8 @@ install:
 
 build_script:
   - cmd: mkdir build
-  - cmd: conan install . -o gtest:shared=True
   - cmd: cd build
-  - cmd: cmake ../ -DBUILD_TEST=TRUE  -G "Visual Studio 14 2015 Win64"
+  - cmd: conan install .. --build missing
+  - cmd: cmake ../ -DBUILD_TEST=TRUE -G "Visual Studio 16"
   - cmd: cmake --build . --config Release
+  - cmd: ctest
