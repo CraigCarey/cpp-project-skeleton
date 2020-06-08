@@ -11,6 +11,8 @@ A basic project outline with some helpful tooling:
 - GTest
 
 ## TODO
+- [ ] Export libskeleton's targets in a modern CMake way
+- [ ] Have consumer consume libskeleton's public targets 
 - [ ] MacOS CI
 - [ ] Test coverage reports
 - [ ] Integrate sanitizers
