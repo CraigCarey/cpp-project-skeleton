@@ -1,9 +1,11 @@
-#include "../include/skeleton.hpp"
+#include "skeleton/skeleton.hpp"
 
 #include <iostream>
 
 #include "Poco/DigestStream.h"
 #include "Poco/MD5Engine.h"
+
+namespace skeleton {
 
 std::string get_md5_sum()
 {
@@ -15,3 +17,5 @@ std::string get_md5_sum()
 
     return std::string(Poco::DigestEngine::digestToHex(md5.digest()));
 }
+
+}  // namespace skeleton

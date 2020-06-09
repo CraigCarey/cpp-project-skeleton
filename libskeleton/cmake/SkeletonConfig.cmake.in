@@ -1,0 +1,10 @@
+get_filename_component(SKELETON_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+include(CMakeFindDependencyMacro)
+
+list(APPEND CMAKE_MODULE_PATH ${SKELETON_CMAKE_DIR})
+
+if(NOT TARGET Skeleton::Skeleton)
+    include("${SKELETON_CMAKE_DIR}/SkeletonTargets.cmake")
+endif()
+
+set(SKELETON_lIBRARIES Skeleton::Skeleton)
