@@ -21,9 +21,7 @@ find_package(GTest REQUIRED)
 find_package(Poco REQUIRED)
 
 set(LIB_SKELETON "skeleton")
-
-# Shared to avoid having to export poco target
-add_library(${LIB_SKELETON} SHARED src/skeleton.cpp)
+add_library(${LIB_SKELETON} src/skeleton.cpp)
 
 # Add an alias so that library can be used inside the build tree, e.g. when testing
 add_library(Skeleton::skeleton ALIAS ${LIB_SKELETON})
@@ -49,6 +47,11 @@ target_sources(${LIB_SKELETON}
         ${header_files}
 )
 
+# TODO: works in Linux, not in Windows?
+# LINK : fatal error LNK1104: cannot open file 'PocoFoundation.lib' [C:\...\skeleton_tester.vcxproj]
+#target_link_libraries(${LIB_SKELETON} PRIVATE ${Poco_LIBS})
+#target_include_directories(${LIB_SKELETON} PRIVATE ${Poco_INCLUDE_DIRS})
+
 target_link_libraries(${LIB_SKELETON} PRIVATE CONAN_PKG::poco)
 
 enable_testing()
@@ -72,10 +75,6 @@ install(
 
 # This is required so that the exported target has the name Skeleton and not skeleton
 set_target_properties(skeleton PROPERTIES EXPORT_NAME Skeleton)
-
-# TODO: This is a hack to prevent the CONAN_PKG::poco target being exported as part of the
-#       SkeletonTargets.cmake / Skeleton::Skeleton PROPERTIES / INTERFACE_LINK_LIBRARIES
-#set_target_properties(skeleton PROPERTIES INTERFACE_LINK_LIBRARIES "")
 
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
@@ -103,9 +102,10 @@ configure_package_config_file(
     INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
 )
 
-# Install the config, configversion and custom find modules
+# Install the config, configversion and dependency find modules
 install(
     FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/FindPoco.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/SkeletonConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/SkeletonConfigVersion.cmake
     DESTINATION ${INSTALL_CONFIGDIR}

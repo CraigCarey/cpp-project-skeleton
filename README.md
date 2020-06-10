@@ -11,9 +11,8 @@ A basic project outline with some helpful tooling:
 - GTest
 
 ## TODO
-- [ ] Export libskeleton's targets & public dependencies in a modern CMake way
-- [ ] Have consumer consume libskeleton's public targets
-- [ ] Get Conan packages from own JFrog artifactory 
+- [ ] Get Conan packages from personal JFrog artifactory
+- [ ] Upload Skeleton Conan package to personal JFrog artifactory 
 - [ ] MacOS CI
 - [ ] Test coverage reports
 - [ ] Integrate sanitizers

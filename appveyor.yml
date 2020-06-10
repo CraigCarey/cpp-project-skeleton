@@ -16,7 +16,7 @@ build_script:
   - cmd: mkdir build
   - cmd: cd build
   - cmd: conan install .. --build missing
-  - cmd: cmake .. -DBUILD_TEST=TRUE -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 16"
+  - cmd: cmake .. -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 16"
   - cmd: cmake --build . --config Release --parallel 2
   - cmd: ctest --parallel 2
   - cmd: cmake --install .
