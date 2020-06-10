@@ -11,6 +11,7 @@ endif()
 # Conan generates FindPackage.cmake files here
 list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_CURRENT_BINARY_DIR})
 
+# TODO: should be doing this using the targets approach?
 if (MSVC)
 	add_compile_options(/W4)
 else()
@@ -49,14 +50,18 @@ target_sources(${LIB_SKELETON}
 
 # TODO: works in Linux, not in Windows?
 # LINK : fatal error LNK1104: cannot open file 'PocoFoundation.lib' [C:\...\skeleton_tester.vcxproj]
-#target_link_libraries(${LIB_SKELETON} PRIVATE ${Poco_LIBS})
-#target_include_directories(${LIB_SKELETON} PRIVATE ${Poco_INCLUDE_DIRS})
+target_link_libraries(${LIB_SKELETON} PRIVATE ${Poco_LIBS})
+target_include_directories(${LIB_SKELETON} PRIVATE ${Poco_INCLUDE_DIRS})
 
-target_link_libraries(${LIB_SKELETON} PRIVATE CONAN_PKG::poco)
+# TODO: Allows skeleton_tester to build in Windows, but breaks skeletonconsumer in Win & Linux
+# Target "skeletonconsumer" links to target "CONAN_PKG::poco" but the target#
+#  was not found.  Perhaps a find_package() call is missing for an IMPORTED#
+#  target, or an ALIAS target is missing?
+#target_link_libraries(${LIB_SKELETON} PRIVATE CONAN_PKG::poco)
 
 enable_testing()
 add_executable(skeleton_tester test/skeleton_tester.cpp)
-target_link_libraries(skeleton_tester PRIVATE ${LIB_SKELETON} CONAN_PKG::poco CONAN_PKG::gtest)
+target_link_libraries(skeleton_tester PRIVATE ${LIB_SKELETON} CONAN_PKG::gtest)
 target_include_directories(skeleton_tester PRIVATE ${GTEST_INCLUDE_DIRS})
 add_test(SkeletonTester ${CMAKE_CURRENT_BINARY_DIR}/bin/skeleton_tester)
 
