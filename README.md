@@ -64,7 +64,10 @@ ctest --parallel 2
 
 #### Installing libskeleton
 ```bash
-cmake --install .
+sudo cmake --install .
+
+# Uninstall
+sudo xargs rm < install_manifest.txt
 ```
 
 #### Building the consumer app against installed libskeleton

@@ -21,7 +21,9 @@ find_package(GTest REQUIRED)
 find_package(Poco REQUIRED)
 
 set(LIB_SKELETON "skeleton")
-add_library(${LIB_SKELETON} src/skeleton.cpp)
+
+# Shared to avoid having to export poco target
+add_library(${LIB_SKELETON} SHARED src/skeleton.cpp)
 
 # Add an alias so that library can be used inside the build tree, e.g. when testing
 add_library(Skeleton::skeleton ALIAS ${LIB_SKELETON})
@@ -47,20 +49,13 @@ target_sources(${LIB_SKELETON}
         ${header_files}
 )
 
-# TODO: more granularity needed - how do we link conan installed libraries privately & publicly?
-target_link_libraries(${LIB_SKELETON} CONAN_PKG::poco)
+target_link_libraries(${LIB_SKELETON} PRIVATE CONAN_PKG::poco)
 
 enable_testing()
 add_executable(skeleton_tester test/skeleton_tester.cpp)
-target_link_libraries(skeleton_tester ${LIB_SKELETON} CONAN_PKG::poco CONAN_PKG::gtest)
+target_link_libraries(skeleton_tester PRIVATE ${LIB_SKELETON} CONAN_PKG::poco CONAN_PKG::gtest)
 target_include_directories(skeleton_tester PRIVATE ${GTEST_INCLUDE_DIRS})
 add_test(SkeletonTester ${CMAKE_CURRENT_BINARY_DIR}/bin/skeleton_tester)
-
-add_executable(poco_tester test/poco_tester.cpp)
-target_link_libraries(poco_tester CONAN_PKG::poco CONAN_PKG::gtest)
-target_include_directories(poco_tester PRIVATE ${GTEST_INCLUDE_DIRS} ${Poco_INCLUDE_DIR})
-add_test(PocoTester ${CMAKE_CURRENT_BINARY_DIR}/bin/poco_tester)
-
 
 ##############################################
 # Installation
@@ -77,6 +72,10 @@ install(
 
 # This is required so that the exported target has the name Skeleton and not skeleton
 set_target_properties(skeleton PROPERTIES EXPORT_NAME Skeleton)
+
+# TODO: This is a hack to prevent the CONAN_PKG::poco target being exported as part of the
+#       SkeletonTargets.cmake / Skeleton::Skeleton PROPERTIES / INTERFACE_LINK_LIBRARIES
+#set_target_properties(skeleton PROPERTIES INTERFACE_LINK_LIBRARIES "")
 
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 

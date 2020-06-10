@@ -13,8 +13,6 @@ std::string get_md5_sum()
     Poco::DigestOutputStream ds(md5);
     ds << "abcdefghijklmnopqrstuvwxyz";
 
-    std::cout << Poco::DigestEngine::digestToHex(md5.digest()) << std::endl;
-
     return std::string(Poco::DigestEngine::digestToHex(md5.digest()));
 }
 
