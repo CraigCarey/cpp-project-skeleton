@@ -8,6 +8,9 @@ else()
     message(WARNING "conanbuildinfo.cmake doesn't exist, you need to run `conan install ..`")
 endif()
 
+# Conan generates FindPackage.cmake files here
+list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_CURRENT_BINARY_DIR})
+
 if (MSVC)
 	add_compile_options(/W4)
 else()
@@ -15,7 +18,7 @@ else()
 endif()
 
 find_package(GTest REQUIRED)
-#find_package(poco REQUIRED) # TODO: how to get this working?
+find_package(Poco REQUIRED)
 
 set(LIB_SKELETON "skeleton")
 add_library(${LIB_SKELETON} src/skeleton.cpp)

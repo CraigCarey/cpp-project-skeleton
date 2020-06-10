@@ -33,29 +33,50 @@ conan profile new default --detect  # Generates default profile detecting GCC an
 conan profile update settings.compiler.libcxx=libstdc++11 default  # Sets libcxx to C++11 ABI
 ```
 
+### Building, Testing and Installing libskeleton
+
+#### Installing Conan packages
 ```bash
+cd libskeleton
 mkdir build && cd build
 conan install .. --build missing
 
-# alternatively
+# alternatively...
 conan install . -s build_type=Debug --install-folder=cmake-build-debug --build missing
 conan install . -s build_type=Release --install-folder=cmake-build-release --build missing
 ```
 
-### Building and Testing
-
+#### Building libskeleton
 ```bash
+# Linux & MacOS
+cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
+cmake --build . --parallel 2
+
+# Windows
+cmake .. -DBUILD_TEST=TRUE -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 16"
+cmake --build . --config Release --parallel 2
+```
+
+#### Testing libskeleton
+```bash
+ctest --parallel 2
+```
+
+#### Installing libskeleton
+```bash
+cmake --install .
+```
+
+#### Building the consumer app against installed libskeleton
+```bash
+cd consumer
 mkdir build && cd build
-conan install .. --build missing
 
-# (Linux, mac)
-$ cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
-$ cmake --build .
-$ make VERBOSE=1  # alternatively
+# Linux & MacOS
+cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
+cmake --build . --parallel 2
 
-# (win)
-$ cmake .. -G "Visual Studio 16"
-$ cmake --build . --config Release
-
-$ ctest
+# Windows
+cmake .. -DBUILD_TEST=TRUE -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 16"
+cmake --build . --config Release --parallel 2
 ```
