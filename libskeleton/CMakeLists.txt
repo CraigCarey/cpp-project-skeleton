@@ -60,7 +60,7 @@ target_include_directories(${LIB_SKELETON} PRIVATE ${Poco_INCLUDE_DIRS})
 
 enable_testing()
 add_executable(skeleton_tester test/skeleton_tester.cpp)
-target_link_libraries(skeleton_tester PRIVATE ${LIB_SKELETON} CONAN_PKG::poco CONAN_PKG::gtest)
+target_link_libraries(skeleton_tester PRIVATE ${LIB_SKELETON} CONAN_PKG::gtest)
 target_include_directories(skeleton_tester PRIVATE ${GTEST_INCLUDE_DIRS})
 add_test(SkeletonTester ${CMAKE_CURRENT_BINARY_DIR}/bin/skeleton_tester)
 
