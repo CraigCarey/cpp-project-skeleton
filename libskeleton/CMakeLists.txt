@@ -15,6 +15,7 @@ else()
 endif()
 
 find_package(GTest REQUIRED)
+#find_package(poco REQUIRED) # TODO: how to get this working?
 
 set(LIB_SKELETON "skeleton")
 add_library(${LIB_SKELETON} src/skeleton.cpp)
