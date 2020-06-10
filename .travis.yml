@@ -1,25 +1,29 @@
-os: linux
-dist: focal
+jobs:
+  include:
+    - os: linux
+      dist: focal
+      compiler:
+        - gcc
+        - clang
+    - os: osx
+
 language: cpp
-compiler:
-  - gcc
-  - clang
 
 install:
-  - pip install --user conan
+  - pip3 install conan
   - conan profile new default --detect
-  - conan profile update settings.compiler.libcxx=libstdc++11 default
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then conan profile update settings.compiler.libcxx=libstdc++11 default; fi
 
 script:
   - cd libskeleton/
   - mkdir build && cd build/
   - conan install .. --build missing
-  - cmake .. -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
+  - cmake .. -DCMAKE_BUILD_TYPE=Release
   - cmake --build . --parallel 2
   - ctest --parallel 2
   - cmake --install .
   - cd ../../consumer/
   - mkdir build && cd build/
-  - cmake .. -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
+  - cmake .. -DCMAKE_BUILD_TYPE=Release
   - cmake --build . --parallel 2
   - ./skeletonconsumer
