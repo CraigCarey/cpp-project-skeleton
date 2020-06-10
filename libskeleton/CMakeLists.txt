@@ -49,10 +49,14 @@ target_sources(${LIB_SKELETON}
 
 # TODO: works in Linux, not in Windows?
 # LINK : fatal error LNK1104: cannot open file 'PocoFoundation.lib' [C:\...\skeleton_tester.vcxproj]
-#target_link_libraries(${LIB_SKELETON} PRIVATE ${Poco_LIBS})
-#target_include_directories(${LIB_SKELETON} PRIVATE ${Poco_INCLUDE_DIRS})
+target_link_libraries(${LIB_SKELETON} PRIVATE ${Poco_LIBS})
+target_include_directories(${LIB_SKELETON} PRIVATE ${Poco_INCLUDE_DIRS})
 
-target_link_libraries(${LIB_SKELETON} PRIVATE CONAN_PKG::poco)
+# TODO: Allows skeleton_tester to build in Windows, but breaks skeletonconsumer in Win & Linux
+# Target "skeletonconsumer" links to target "CONAN_PKG::poco" but the target#
+#  was not found.  Perhaps a find_package() call is missing for an IMPORTED#
+#  target, or an ALIAS target is missing?
+#target_link_libraries(${LIB_SKELETON} PRIVATE CONAN_PKG::poco)
 
 enable_testing()
 add_executable(skeleton_tester test/skeleton_tester.cpp)
