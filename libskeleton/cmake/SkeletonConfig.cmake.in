@@ -3,9 +3,9 @@ include(CMakeFindDependencyMacro)
 
 list(APPEND CMAKE_MODULE_PATH ${SKELETON_CMAKE_DIR})
 
-# TODO: required to find FindPoco.cmake - this feels like a hack to me?
+# TODO: required to find FindPoco & FindBoost .cmakes - this feels like a hack to me?
 find_dependency(Poco)
-list(REMOVE_AT CMAKE_MODULE_PATH -1)
+find_dependency(Boost)
 
 if(NOT TARGET Skeleton::Skeleton)
     include("${SKELETON_CMAKE_DIR}/SkeletonTargets.cmake")

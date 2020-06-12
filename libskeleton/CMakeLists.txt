@@ -7,6 +7,7 @@ set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_PREFIX_PATH})
 
 find_package(GTest REQUIRED)
 find_package(Poco REQUIRED)
+find_package(Boost REQUIRED)
 
 set(LIB_SKELETON "skeleton")
 add_library(${LIB_SKELETON} src/skeleton.cpp)
@@ -43,6 +44,8 @@ target_sources(${LIB_SKELETON}
 target_link_libraries(${LIB_SKELETON}
 	PUBLIC
 		Poco::Poco
+	PRIVATE
+		Boost::Boost
 )
 
 enable_testing()
@@ -103,8 +106,12 @@ export(
 # Install the config, configversion and dependency find modules
 install(
 		FILES
-		${CMAKE_CURRENT_BINARY_DIR}/FindPoco.cmake
+		${CMAKE_CURRENT_BINARY_DIR}/FindBoost.cmake
+		${CMAKE_CURRENT_BINARY_DIR}/FindBZip2.cmake
+		${CMAKE_CURRENT_BINARY_DIR}/FindGTest.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/FindOpenSSL.cmake
+		${CMAKE_CURRENT_BINARY_DIR}/FindPoco.cmake
+		${CMAKE_CURRENT_BINARY_DIR}/FindZLIB.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/SkeletonConfig.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/SkeletonConfigVersion.cmake
 		DESTINATION ${INSTALL_CONFIGDIR}
