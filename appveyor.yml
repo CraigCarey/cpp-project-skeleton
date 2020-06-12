@@ -17,7 +17,7 @@ build_script:
   - cmd: cd libskeleton
   - cmd: mkdir build
   - cmd: cd build
-  - cmd: conan install .. --build missing -r=artifactory
+  - cmd: conan install .. --build missing
   - cmd: cmake .. -G "Visual Studio 16"
   - cmd: cmake --build . --config Release --parallel 2
   - cmd: ctest --parallel 2
