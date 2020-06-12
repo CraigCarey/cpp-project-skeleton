@@ -9,11 +9,13 @@ install:
   - pip install --user conan
   - conan profile new default --detect
   - conan profile update settings.compiler.libcxx=libstdc++11 default
+  - conan remote add artifactory https://api.bintray.com/conan/craiganv/cpp-skeleton-repo
+  - conan remote list
 
 script:
   - cd libskeleton/
   - mkdir build && cd build/
-  - conan install .. --build missing
+  - conan install .. --build missing -r=artifactory
   - cmake .. -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
   - cmake --build . --parallel 2
   - ctest --parallel 2

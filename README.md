@@ -11,8 +11,8 @@ A basic project outline with some helpful tooling:
 - GTest
 
 ## TODO
-- [ ] Get Conan packages from personal JFrog artifactory
-- [ ] Upload Skeleton Conan package to personal JFrog artifactory 
+- [ ] Upload Skeleton Conan package to personal artifactory
+- [ ] Packaging Pre-built Binaries and pushing to personal artifactory 
 - [ ] MacOS CI
 - [ ] Test coverage reports
 - [ ] Integrate sanitizers
@@ -81,4 +81,12 @@ cmake --build . --parallel 2
 # Windows
 cmake .. -DBUILD_TEST=TRUE -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 16"
 cmake --build . --config Release --parallel 2
+```
+
+#### Getting packages from personal artifactory
+```bash
+# View my artifactory @ https://bintray.com/craiganv/cpp-skeleton-repo
+conan remote add artifactory https://api.bintray.com/conan/craiganv/cpp-skeleton-repo
+conan remote list
+conan install .. -r=artifactory
 ```

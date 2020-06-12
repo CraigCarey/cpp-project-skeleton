@@ -8,6 +8,8 @@ install:
   - cmd: set PATH=%PATH%;%PYTHON%/Scripts/
   - cmd: pip.exe install conan
   - cmd: conan user # Create the conan data directory
+  - cmd: conan remote add artifactory https://api.bintray.com/conan/craiganv/cpp-skeleton-repo
+  - cmd: conan remote list
   - cmd: conan --version
   - cmd: cmake --version
 
@@ -15,7 +17,7 @@ build_script:
   - cmd: cd libskeleton
   - cmd: mkdir build
   - cmd: cd build
-  - cmd: conan install .. --build missing
+  - cmd: conan install .. --build missing -r=artifactory
   - cmd: cmake .. -G "Visual Studio 16"
   - cmd: cmake --build . --config Release --parallel 2
   - cmd: ctest --parallel 2
@@ -23,7 +25,7 @@ build_script:
   - cmd: cd ../../consumer/
   - cmd: mkdir build
   - cmd: cd build
-  - cmd: cmake .. -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 16"
+  - cmd: cmake .. -G "Visual Studio 16"
   - cmd: cmake --build . --config Release --parallel 2
 
 test_script:
