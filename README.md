@@ -15,9 +15,10 @@ A basic project outline with some helpful tooling:
 - [ ] Upload Skeleton Conan package to personal artifactory
 - [ ] Packaging Pre-built Binaries and pushing to personal artifactory 
 - [ ] MacOS CI
+- [ ] Static analysis reports - CXX_CLANG_TIDY & CXX_CPPLINT?
 - [ ] Test coverage reports
 - [ ] Integrate sanitizers
-- [ ] Integrate include-what-you-use (or similar)
+- [ ] Integrate include-what-you-use (or similar) - CXX_INCLUDE_WHAT_YOU_USE / LINK_WHAT_YOU_USE?
 - [ ] Integrate Sonarqube (or similar)
 
 ### Conan Setup

@@ -8,6 +8,8 @@ if (NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release)
 endif (NOT CMAKE_BUILD_TYPE)
 
+set(CMAKE_DEBUG_POSTFIX "-d")
+
 # Using the "cmake_find_package" generator
 set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_MODULE_PATH})
 set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_PREFIX_PATH})
@@ -61,7 +63,7 @@ enable_testing()
 add_executable(skeleton_tester test/skeleton_tester.cpp)
 target_link_libraries(skeleton_tester PRIVATE ${LIB_SKELETON} GTest::GTest)
 target_include_directories(skeleton_tester PRIVATE ${GTEST_INCLUDE_DIRS})
-add_test(SkeletonTester skeleton_tester)
+add_test(Skeleton.Test skeleton_tester)
 
 ##############################################
 # Installation
@@ -72,14 +74,16 @@ set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/Skeleton)
 # This is required so that the exported target has the name Skeleton and not skeleton
 set_target_properties(skeleton PROPERTIES EXPORT_NAME Skeleton)
 
+install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
 install(
     TARGETS skeleton
     EXPORT SkeletonTargets
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
-
-install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Export the targets to a script
 install(EXPORT SkeletonTargets
@@ -114,16 +118,16 @@ export(
 
 # Install the config, configversion and dependency find modules
 install(
-		FILES
-		${CMAKE_CURRENT_BINARY_DIR}/FindBoost.cmake
-		${CMAKE_CURRENT_BINARY_DIR}/FindBZip2.cmake
-		${CMAKE_CURRENT_BINARY_DIR}/FindGTest.cmake
-		${CMAKE_CURRENT_BINARY_DIR}/FindOpenSSL.cmake
+	FILES
 		${CMAKE_CURRENT_BINARY_DIR}/FindPoco.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/FindZLIB.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/SkeletonConfig.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/SkeletonConfigVersion.cmake
-		DESTINATION ${INSTALL_CONFIGDIR}
+		${CMAKE_CURRENT_BINARY_DIR}/FindBoost.cmake
+		${CMAKE_CURRENT_BINARY_DIR}/FindBZip2.cmake
+		${CMAKE_CURRENT_BINARY_DIR}/FindOpenSSL.cmake
+	DESTINATION
+		${INSTALL_CONFIGDIR}
 )
 
 # Register package in user's package registry
