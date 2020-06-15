@@ -1,5 +1,12 @@
 cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
-project(libskeleton VERSION 1.0 LANGUAGES CXX)
+project(libskeleton VERSION 1.2.3 LANGUAGES CXX)
+
+##############################################
+# Building & Testing
+
+if (NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE Release)
+endif (NOT CMAKE_BUILD_TYPE)
 
 # Using the "cmake_find_package" generator
 set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_MODULE_PATH})
@@ -30,6 +37,8 @@ target_compile_options(${LIB_SKELETON}
 	PRIVATE
 		$<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:-Wall -Wextra -Wpedantic>
 )
+
+#set_target_properties(${LIB_SKELETON} PROPERTIES LINK_FLAGS_RELEASE -s) # TODO: doesn't work with static libs or Windows
 
 # Add sources to the library
 # Header files are added only so that they appear in IDEs such as Visual Studio etc
@@ -119,3 +128,25 @@ install(
 
 # Register package in user's package registry
 export(PACKAGE Skeleton)
+
+##############################################
+# Packaging
+
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "CPP Skeleton Project Lib")
+set(CPACK_PACKAGE_VENDOR "Craig Carey")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE")
+set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}.${CMake_VERSION_PATCH}")
+set(CPACK_STRIP_FILES "libskeleton.a") # TODO: doesn't work with static libs
+set(CPACK_SOURCE_STRIP_FILES "")
+
+if (WIN32)
+	set(CPACK_GENERATOR "ZIP;") # TODO: WIX
+elseif(UNIX)
+	set(CPACK_GENERATOR "STGZ;TGZ;ZIP;") # TODO: DEB
+endif()
+
+include(CPack)

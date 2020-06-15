@@ -22,6 +22,7 @@ build_script:
   - cmd: cmake --build . --config Release --parallel 2
   - cmd: ctest --parallel 2
   - cmd: cmake --install .
+  - cmd: cpack
   - cmd: cd ../../consumer/
   - cmd: mkdir build
   - cmd: cd build

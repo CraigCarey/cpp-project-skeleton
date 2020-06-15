@@ -11,6 +11,7 @@ A basic project outline with some helpful tooling:
 - GTest
 
 ## TODO
+- [ ] DEB packaging
 - [ ] Upload Skeleton Conan package to personal artifactory
 - [ ] Packaging Pre-built Binaries and pushing to personal artifactory 
 - [ ] MacOS CI
