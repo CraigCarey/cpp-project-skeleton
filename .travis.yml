@@ -16,13 +16,13 @@ script:
   - cd libskeleton/
   - mkdir build && cd build/
   - conan install .. --build missing
-  - cmake .. -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
+  - cmake .. -DUSE_CONAN_PACKAGE=True -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
   - cmake --build . --parallel 2
   - ctest --parallel 2
   - cmake --install .
   - cpack
   - cd ../../consumer/
   - mkdir build && cd build/
-  - cmake .. -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
+  - cmake .. -DUSE_CONAN_PACKAGE=True -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
   - cmake --build . --parallel 2
   - ./skeletonconsumer

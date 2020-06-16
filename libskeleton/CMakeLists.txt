@@ -10,13 +10,15 @@ endif (NOT CMAKE_BUILD_TYPE)
 
 set(CMAKE_DEBUG_POSTFIX "-d")
 
-# Using the "cmake_find_package" generator
-set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_MODULE_PATH})
-set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_PREFIX_PATH})
+if(USE_CONAN_PACKAGE)
+	# Using the "cmake_find_package" generator
+	set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_MODULE_PATH})
+	set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_PREFIX_PATH})
+endif(USE_CONAN_PACKAGE)
 
 find_package(GTest REQUIRED)
-find_package(Poco REQUIRED)
-find_package(Boost REQUIRED)
+find_package(Poco COMPONENTS Foundation REQUIRED)
+find_package(Boost COMPONENTS regex REQUIRED)
 
 set(LIB_SKELETON "skeleton")
 add_library(${LIB_SKELETON} src/skeleton.cpp)
@@ -52,12 +54,21 @@ target_sources(${LIB_SKELETON}
         ${header_files}
 )
 
-target_link_libraries(${LIB_SKELETON}
+if(USE_CONAN_PACKAGE)
+	target_link_libraries(${LIB_SKELETON}
 	PUBLIC
 		Poco::Poco
 	PRIVATE
 		Boost::Boost
-)
+	)
+else()
+	target_link_libraries(${LIB_SKELETON}
+		PUBLIC
+			Poco::Foundation
+		PRIVATE
+			Boost::regex
+	)
+endif(USE_CONAN_PACKAGE)
 
 enable_testing()
 add_executable(skeleton_tester test/skeleton_tester.cpp)
