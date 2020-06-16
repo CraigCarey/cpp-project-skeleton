@@ -10,13 +10,19 @@ endif (NOT CMAKE_BUILD_TYPE)
 
 set(CMAKE_DEBUG_POSTFIX "-d")
 
-# Using the "cmake_find_package" generator
-set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_MODULE_PATH})
-set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_PREFIX_PATH})
+if(USE_CONAN_PACKAGE)
+	include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+	conan_basic_setup()
+endif(USE_CONAN_PACKAGE)
+
+# Required to make consistent with how conan configures these
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 find_package(GTest REQUIRED)
-find_package(Poco REQUIRED)
-find_package(Boost REQUIRED)
+find_package(Poco REQUIRED COMPONENTS Foundation)
+find_package(Boost REQUIRED COMPONENTS regex)
 
 set(LIB_SKELETON "skeleton")
 add_library(${LIB_SKELETON} src/skeleton.cpp)
@@ -54,16 +60,16 @@ target_sources(${LIB_SKELETON}
 
 target_link_libraries(${LIB_SKELETON}
 	PUBLIC
-		Poco::Poco
+		Poco::Foundation
 	PRIVATE
-		Boost::Boost
+		${Boost_LIBRARIES}
 )
 
 enable_testing()
 add_executable(skeleton_tester test/skeleton_tester.cpp)
 target_link_libraries(skeleton_tester PRIVATE ${LIB_SKELETON} GTest::GTest)
 target_include_directories(skeleton_tester PRIVATE ${GTEST_INCLUDE_DIRS})
-add_test(Skeleton.Test skeleton_tester)
+add_test(Skeleton.Test bin/skeleton_tester)
 
 ##############################################
 # Installation
@@ -116,16 +122,11 @@ export(
     NAMESPACE Skeleton::
 )
 
-# Install the config, configversion and dependency find modules
+# Install the config & configversion modules
 install(
 	FILES
-		${CMAKE_CURRENT_BINARY_DIR}/FindPoco.cmake
-		${CMAKE_CURRENT_BINARY_DIR}/FindZLIB.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/SkeletonConfig.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/SkeletonConfigVersion.cmake
-		${CMAKE_CURRENT_BINARY_DIR}/FindBoost.cmake
-		${CMAKE_CURRENT_BINARY_DIR}/FindBZip2.cmake
-		${CMAKE_CURRENT_BINARY_DIR}/FindOpenSSL.cmake
 	DESTINATION
 		${INSTALL_CONFIGDIR}
 )

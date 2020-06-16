@@ -1,5 +1,6 @@
 cmake-build-*
 build/
-.idea/
+build2/
 bld/
 a.out
+.idea/
