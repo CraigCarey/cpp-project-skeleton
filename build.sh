@@ -2,6 +2,9 @@
 
 set -eux
 
+exec > >(tee -a "build.log") 2>&1
+date
+
 function mkcd()
 {
   rm -rf "$1" && mkdir "$1" && pushd "$1"
@@ -13,6 +16,11 @@ function revert_conan_uninstall()
   if [[ -d ~/.conan/data.bk ]]; then
     mv ~/.conan/data.bk ~/.conan/data
   fi
+}
+
+function conan_uninstall()
+{
+  mv ~/.conan/data ~/.conan/data.bk # simulate uninstall to save time
 }
 
 # Make the script agnostic to where its called from
@@ -47,28 +55,35 @@ sudo cmake --install .
 
 popd
 
-## Build without Conan packages (just to prove it works, doesn't install)
-#mv ~/.conan/data ~/.conan/data.bk # simulate uninstall to save time
-##conan remove -f poco
-##conan remove -f boost
-##conan remove -f gtest
-#sudo apt install -y libpoco-dev libboost-all-dev libgtest-dev
-#mkcd build2
-#
-#cmake ..
-#cmake --build .
-#ctest
-#
-#revert_conan_uninstall
-#
-#popd
+# Build without Conan packages (just to prove it works, doesn't install)
+conan_uninstall
+sudo apt install -y libpoco-dev libboost-all-dev libgtest-dev
+mkcd build2
+
+cmake ..
+cmake --build .
+ctest
+
+revert_conan_uninstall
 
 popd
+popd
 
-# Build consumer against libskeleton and Conan installed dependencies
-# TODO: build Conan linked libskeleton against apt installed dependencies
+# Build consumer against Conan linked libskeleton and Conan installed dependencies
 pushd consumer
 mkcd build
 cmake .. -DCMAKE_BUILD_TYPE=Debug
 cmake --build .
 ./skeletonconsumer
+
+popd
+
+## TODO: Build consumer against Conan linked libskeleton and apt installed dependencies
+#sudo apt install -y libpoco-dev libboost-all-dev libgtest-dev
+#conan_uninstall
+#mkcd build2
+#cmake .. -DCMAKE_BUILD_TYPE=Debug
+#cmake --build .
+#./skeletonconsumer
+#
+#revert_conan_uninstall

@@ -12,10 +12,11 @@ set(CMAKE_DEBUG_POSTFIX "-d")
 
 if(USE_CONAN_PACKAGE)
 	# Using the "cmake_find_package" generator
-	set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_MODULE_PATH})
-	set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_PREFIX_PATH})
+#	set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_MODULE_PATH})
+#	set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_PREFIX_PATH})
 
-	# TODO: Using the "cmake_paths" generator
+	#: Using the "cmake_paths" generator
+	include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 
 endif(USE_CONAN_PACKAGE)
 
@@ -36,8 +37,10 @@ target_include_directories(${LIB_SKELETON}
     PUBLIC
         $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+		${Boost_INCLUDE_DIRS}
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
+		${Poco_INCLUDE_DIRS}
 )
 
 target_compile_options(${LIB_SKELETON}
@@ -57,22 +60,12 @@ target_sources(${LIB_SKELETON}
         ${header_files}
 )
 
-if(USE_CONAN_PACKAGE)
-	target_link_libraries(${LIB_SKELETON}
+target_link_libraries(${LIB_SKELETON}
 	PUBLIC
-		Boost::Boost
+		${Boost_LIBRARIES}
 	PRIVATE
-		Poco::Poco
-	)
-else()
-	target_link_libraries(${LIB_SKELETON}
-		PUBLIC
-			Boost::chrono
-		PRIVATE
-			Boost::regex
-			Poco::Foundation
-	)
-endif(USE_CONAN_PACKAGE)
+		${Poco_LIBRARIES}
+)
 
 enable_testing()
 add_executable(skeleton_tester test/skeleton_tester.cpp)

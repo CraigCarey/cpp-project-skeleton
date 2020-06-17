@@ -4,3 +4,4 @@ build2/
 bld/
 a.out
 .idea/
+*.log
