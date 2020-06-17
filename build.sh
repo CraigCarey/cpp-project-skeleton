@@ -2,7 +2,7 @@
 
 set -eux
 
-exec > >(tee -a "build.log") 2>&1
+exec > >(tee "build.log") 2>&1
 date
 
 function mkcd()
@@ -27,8 +27,8 @@ function conan_uninstall()
 pushd "$(dirname "$(readlink -f "$0")")" > /dev/null
 
 # Remove any apt install packages that may confuse things
-sudo apt remove -y libpoco-dev libboost-all-dev libgtest-dev
-sudo apt autoremove -y
+#sudo apt remove -y libpoco-dev libboost-all-dev libgtest-dev
+#sudo apt autoremove -y
 
 # Remove old install
 sudo rm -rf /usr/local/include/skeleton/ /usr/local/lib/libskeleton.a /usr/local/lib/cmake/Skeleton/
@@ -78,7 +78,7 @@ cmake --build .
 
 popd
 
-## TODO: Build consumer against Conan linked libskeleton and apt installed dependencies
+# TODO: Build consumer against Conan linked libskeleton and apt installed dependencies
 #sudo apt install -y libpoco-dev libboost-all-dev libgtest-dev
 #conan_uninstall
 #mkcd build2

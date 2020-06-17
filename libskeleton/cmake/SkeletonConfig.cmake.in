@@ -3,7 +3,6 @@ include(CMakeFindDependencyMacro)
 
 list(APPEND CMAKE_MODULE_PATH ${SKELETON_CMAKE_DIR})
 
-# TODO: required to find FindPoco & FindBoost .cmakes - this feels like a hack to me?
 find_dependency(Boost COMPONENTS chrono regex REQUIRED)
 find_dependency(Poco COMPONENTS Foundation REQUIRED)
 

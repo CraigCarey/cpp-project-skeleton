@@ -127,13 +127,8 @@ export(
 # Install the config, configversion and dependency find modules
 install(
 	FILES
-		${CMAKE_CURRENT_BINARY_DIR}/FindPoco.cmake
-		${CMAKE_CURRENT_BINARY_DIR}/FindZLIB.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/SkeletonConfig.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/SkeletonConfigVersion.cmake
-		${CMAKE_CURRENT_BINARY_DIR}/FindBoost.cmake
-		${CMAKE_CURRENT_BINARY_DIR}/FindBZip2.cmake
-		${CMAKE_CURRENT_BINARY_DIR}/FindOpenSSL.cmake
 	DESTINATION
 		${INSTALL_CONFIGDIR}
 )
