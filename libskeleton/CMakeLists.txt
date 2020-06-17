@@ -21,7 +21,6 @@ if(USE_CONAN_PACKAGE)
 endif(USE_CONAN_PACKAGE)
 
 find_package(GTest REQUIRED)
-find_package(Poco COMPONENTS Foundation REQUIRED)
 find_package(Boost COMPONENTS regex chrono REQUIRED)
 
 set(LIB_SKELETON "skeleton")
@@ -40,7 +39,6 @@ target_include_directories(${LIB_SKELETON}
 		${Boost_INCLUDE_DIRS}
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
-		${Poco_INCLUDE_DIRS}
 )
 
 target_compile_options(${LIB_SKELETON}
@@ -63,8 +61,6 @@ target_sources(${LIB_SKELETON}
 target_link_libraries(${LIB_SKELETON}
 	PUBLIC
 		${Boost_LIBRARIES}
-	PRIVATE
-		${Poco_LIBRARIES}
 )
 
 enable_testing()

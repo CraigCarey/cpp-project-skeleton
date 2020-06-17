@@ -26,12 +26,14 @@ function conan_uninstall()
 # Make the script agnostic to where its called from
 pushd "$(dirname "$(readlink -f "$0")")" > /dev/null
 
+readonly APT_PACKAGES="libboost-all-dev libgtest-dev libbz2-dev"
+
 # Remove any apt install packages that may confuse things
-#sudo apt remove -y libpoco-dev libboost-all-dev libgtest-dev
-#sudo apt autoremove -y
+sudo apt remove -y $APT_PACKAGES
+sudo apt autoremove -y
 
 # Remove old install
-sudo rm -rf /usr/local/include/skeleton/ /usr/local/lib/libskeleton.a /usr/local/lib/cmake/Skeleton/
+sudo rm -rf /usr/local/include/skeleton/ /usr/local/lib/libskeleton* /usr/local/lib/cmake/Skeleton/
 
 revert_conan_uninstall
 
@@ -57,7 +59,7 @@ popd
 
 # Build without Conan packages (just to prove it works, doesn't install)
 conan_uninstall
-sudo apt install -y libpoco-dev libboost-all-dev libgtest-dev
+sudo apt install -y $APT_PACKAGES
 mkcd build2
 
 cmake ..
@@ -78,12 +80,13 @@ cmake --build .
 
 popd
 
-# TODO: Build consumer against Conan linked libskeleton and apt installed dependencies
-#sudo apt install -y libpoco-dev libboost-all-dev libgtest-dev
-#conan_uninstall
-#mkcd build2
-#cmake .. -DCMAKE_BUILD_TYPE=Debug
-#cmake --build .
-#./skeletonconsumer
-#
-#revert_conan_uninstall
+# Build consumer against Conan linked libskeleton and apt installed dependencies
+sudo apt install -y $APT_PACKAGES
+conan_uninstall
+conan search
+mkcd build2
+cmake .. -DCMAKE_BUILD_TYPE=Debug
+cmake --build .
+./skeletonconsumer
+
+revert_conan_uninstall

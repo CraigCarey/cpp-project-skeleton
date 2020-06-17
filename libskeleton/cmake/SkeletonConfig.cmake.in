@@ -4,7 +4,8 @@ include(CMakeFindDependencyMacro)
 list(APPEND CMAKE_MODULE_PATH ${SKELETON_CMAKE_DIR})
 
 find_dependency(Boost COMPONENTS chrono regex REQUIRED)
-find_dependency(Poco COMPONENTS Foundation REQUIRED)
+find_dependency(ZLIB)
+find_dependency(BZip2)
 
 if(NOT TARGET Skeleton::Skeleton)
     include("${SKELETON_CMAKE_DIR}/SkeletonTargets.cmake")

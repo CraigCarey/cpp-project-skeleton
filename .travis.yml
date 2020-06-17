@@ -20,9 +20,16 @@ script:
   - cmake --build . --parallel 2
   - ctest --parallel 2
   - cmake --install .
+  - ls -al
+  - cat cmake_install.cmake
+  - sudo make install
   - cpack
   - cd ../../consumer/
   - mkdir build && cd build/
+  - conan remove -f "*" # ensure consumer is NOT built against Conan libs
+  - conan search
+  - sudo apt-get -y install libboost-all-dev libgtest-dev libbz2-dev
+  - cat /usr/local/lib/cmake/Skeleton/*
   - cmake .. -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
   - cmake --build . --parallel 2
   - ./skeletonconsumer
