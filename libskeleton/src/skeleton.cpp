@@ -9,7 +9,7 @@
 
 namespace skeleton {
 
-std::string get_md5_sum()
+boost::optional<std::string> get_md5_sum()
 {
     Poco::MD5Engine md5;
     Poco::DigestOutputStream ds(md5);
@@ -19,6 +19,11 @@ std::string get_md5_sum()
     boost::regex expr{R"(\b[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\b)"};
 
     return std::string(Poco::DigestEngine::digestToHex(md5.digest()));
+}
+
+boost::chrono::system_clock::time_point get_sys_clock()
+{
+    return boost::chrono::system_clock::now();
 }
 
 }  // namespace skeleton

@@ -18,7 +18,7 @@ endif(USE_CONAN_PACKAGE)
 
 find_package(GTest REQUIRED)
 find_package(Poco COMPONENTS Foundation REQUIRED)
-find_package(Boost COMPONENTS regex REQUIRED)
+find_package(Boost COMPONENTS regex chrono REQUIRED)
 
 set(LIB_SKELETON "skeleton")
 add_library(${LIB_SKELETON} src/skeleton.cpp)
@@ -64,9 +64,10 @@ if(USE_CONAN_PACKAGE)
 else()
 	target_link_libraries(${LIB_SKELETON}
 		PUBLIC
-			Poco::Foundation
+			Boost::chrono
 		PRIVATE
 			Boost::regex
+			Poco::Foundation
 	)
 endif(USE_CONAN_PACKAGE)
 

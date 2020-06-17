@@ -31,8 +31,7 @@ sudo cmake --install .
 
 popd
 
-# Remove Conan packages and install using apt instead
-mv ~/.conan/data/ ~/.conan/data.bk # simulate uninstall to save time
+mv ~/.conan/data ~/.conan/data.bk # simulate uninstall to save time
 #conan remove -f poco
 #conan remove -f boost
 #conan remove -f gtest
@@ -46,10 +45,10 @@ cmake ..
 cmake --build .
 ctest
 
-popd
-popd
+mv ~/.conan/data.bk ~/.conan/data # revert simulated uninstall
 
-mv ~/.conan/data.bk ~/.conan/data/
+popd
+popd
 
 # Build consumer against libskeleton and Conan installed dependencies
 # TODO: build Conan linked libskeleton against apt installed dependencies
