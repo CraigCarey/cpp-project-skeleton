@@ -14,6 +14,9 @@ if(USE_CONAN_PACKAGE)
 	# Using the "cmake_find_package" generator
 	set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_MODULE_PATH})
 	set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_PREFIX_PATH})
+
+	# TODO: Using the "cmake_paths" generator
+
 endif(USE_CONAN_PACKAGE)
 
 find_package(GTest REQUIRED)
@@ -57,9 +60,9 @@ target_sources(${LIB_SKELETON}
 if(USE_CONAN_PACKAGE)
 	target_link_libraries(${LIB_SKELETON}
 	PUBLIC
-		Poco::Poco
-	PRIVATE
 		Boost::Boost
+	PRIVATE
+		Poco::Poco
 	)
 else()
 	target_link_libraries(${LIB_SKELETON}
@@ -73,7 +76,7 @@ endif(USE_CONAN_PACKAGE)
 
 enable_testing()
 add_executable(skeleton_tester test/skeleton_tester.cpp)
-target_link_libraries(skeleton_tester PRIVATE ${LIB_SKELETON} GTest::GTest)
+target_link_libraries(skeleton_tester ${LIB_SKELETON} GTest::GTest)
 target_include_directories(skeleton_tester PRIVATE ${GTEST_INCLUDE_DIRS})
 add_test(Skeleton.Test skeleton_tester)
 
