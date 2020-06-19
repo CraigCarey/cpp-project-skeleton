@@ -5,23 +5,25 @@ project(libskeleton VERSION 1.2.3 LANGUAGES CXX)
 # Building & Testing
 
 if (NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE Release)
+    set(CMAKE_BUILD_TYPE Release)
 endif (NOT CMAKE_BUILD_TYPE)
 
 set(CMAKE_DEBUG_POSTFIX "-d")
 
-if(USE_CONAN_PACKAGE)
-	# Using the "cmake_find_package" generator
-#	set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_MODULE_PATH})
-#	set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_PREFIX_PATH})
+#include(${CMAKE_CURRENT_LIST_DIR}/cmake/print_target_properties.cmake)
 
-	#: Using the "cmake_paths" generator
-	include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
+if(USE_CONAN_PACKAGE)
+    # Using the "cmake_find_package" generator
+#   set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_MODULE_PATH})
+#   set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_PREFIX_PATH})
+
+    #: Using the "cmake_paths" generator
+    include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 
 endif(USE_CONAN_PACKAGE)
 
 find_package(GTest REQUIRED)
-find_package(Boost COMPONENTS regex chrono REQUIRED)
+find_package(Boost REQUIRED COMPONENTS regex chrono)
 
 set(LIB_SKELETON "skeleton")
 add_library(${LIB_SKELETON} src/skeleton.cpp)
@@ -35,15 +37,15 @@ add_library(Skeleton::Skeleton ALIAS ${LIB_SKELETON})
 target_include_directories(${LIB_SKELETON}
     PUBLIC
         $<INSTALL_INTERFACE:include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-		${Boost_INCLUDE_DIRS}
+#        $<INSTALL_INTERFACE:${Boost_INCLUDE_DIRS}> # TODO: results in hardcoded path in INTERFACE_INCLUDE_DIRECTORIES.
     PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${Boost_INCLUDE_DIRS}>
 )
 
 target_compile_options(${LIB_SKELETON}
-	PRIVATE
-		$<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:-Wall -Wextra -Wpedantic>
+    PRIVATE
+        $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:-Wall -Wextra -Wpedantic>
 )
 
 #set_target_properties(${LIB_SKELETON} PROPERTIES LINK_FLAGS_RELEASE -s) # TODO: doesn't work with static libs or Windows
@@ -59,14 +61,17 @@ target_sources(${LIB_SKELETON}
 )
 
 target_link_libraries(${LIB_SKELETON}
-	PUBLIC
-		${Boost_LIBRARIES}
+	INTERFACE
+        Boost::regex
+        Boost::chrono
 )
+
+#print_target_properties(${LIB_SKELETON})
 
 enable_testing()
 add_executable(skeleton_tester test/skeleton_tester.cpp)
 target_link_libraries(skeleton_tester ${LIB_SKELETON} GTest::GTest)
-target_include_directories(skeleton_tester PRIVATE ${GTEST_INCLUDE_DIRS})
+target_include_directories(skeleton_tester PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${GTEST_INCLUDE_DIRS})
 add_test(Skeleton.Test skeleton_tester)
 
 ##############################################
@@ -85,7 +90,7 @@ install(
     EXPORT SkeletonTargets
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
@@ -111,22 +116,22 @@ configure_package_config_file(
     ${CMAKE_CURRENT_LIST_DIR}/cmake/SkeletonConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/SkeletonConfig.cmake
     INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
-	PATH_VARS CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_LIBDIR
+    PATH_VARS CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_LIBDIR
 )
 
 export(
     EXPORT SkeletonTargets
     FILE ${CMAKE_CURRENT_BINARY_DIR}/SkeletonTargets.cmake
-    NAMESPACE Skeleton::
+NAMESPACE Skeleton::
 )
 
 # Install the config, configversion and dependency find modules
 install(
-	FILES
-		${CMAKE_CURRENT_BINARY_DIR}/SkeletonConfig.cmake
-		${CMAKE_CURRENT_BINARY_DIR}/SkeletonConfigVersion.cmake
-	DESTINATION
-		${INSTALL_CONFIGDIR}
+    FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/SkeletonConfig.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/SkeletonConfigVersion.cmake
+    DESTINATION
+        ${INSTALL_CONFIGDIR}
 )
 
 # Register package in user's package registry
@@ -147,9 +152,9 @@ set(CPACK_STRIP_FILES "libskeleton.a") # TODO: doesn't work with static libs
 set(CPACK_SOURCE_STRIP_FILES "")
 
 if (WIN32)
-	set(CPACK_GENERATOR "ZIP;") # TODO: WIX
+    set(CPACK_GENERATOR "ZIP;") # TODO: WIX
 elseif(UNIX)
-	set(CPACK_GENERATOR "STGZ;TGZ;ZIP;") # TODO: DEB
+    set(CPACK_GENERATOR "STGZ;TGZ;ZIP;") # TODO: DEB
 endif()
 
 include(CPack)

@@ -21,8 +21,8 @@ build_script:
   - cmd: cmake .. -DUSE_CONAN_PACKAGE=True -G "Visual Studio 16"
   - cmd: cmake --build . --config Release --parallel 2
   - cmd: ctest --parallel 2
-  - cmd: cmake --install .
   - cmd: cpack
+  - cmd: cmake --install .
   - cmd: cd ../../consumer/
   - cmd: mkdir build
   - cmd: cd build

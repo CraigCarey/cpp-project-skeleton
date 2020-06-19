@@ -29,8 +29,8 @@ pushd "$(dirname "$(readlink -f "$0")")" > /dev/null
 readonly APT_PACKAGES="libboost-all-dev libgtest-dev libbz2-dev"
 
 # TODO: Remove any apt install packages that may confuse things
-#sudo apt remove -y $APT_PACKAGES
-#sudo apt autoremove -y
+sudo apt remove -y $APT_PACKAGES
+sudo apt autoremove -y
 
 # Remove old install
 sudo rm -rf /usr/local/include/skeleton/ /usr/local/lib/libskeleton* /usr/local/lib/cmake/Skeleton/
@@ -48,16 +48,17 @@ cmake --build . --parallel 2
 ctest
 cpack
 sudo cmake --install .
+make clean
 
-if grep -ir conan /usr/local/lib/cmake/Skeleton/; then
-  printf "INFO: Targets coupled to Conan\n"
-fi
+grep -ir INTERFACE_INCLUDE_DIRECTORIES /usr/local/lib/cmake/Skeleton/
+grep -ir INTERFACE_LINK_LIBRARIES /usr/local/lib/cmake/Skeleton/
 
 cmake .. -DUSE_CONAN_PACKAGE=True -DCMAKE_BUILD_TYPE=Release
 cmake --build . --parallel 2
 ctest
 cpack
 sudo cmake --install .
+make clean
 
 popd
 
@@ -68,6 +69,7 @@ mkcd build2
 cmake ..
 cmake --build . --parallel 2
 ctest
+make clean
 
 if grep -ir conan SkeletonTargets.cmake; then
   printf "ERROR: Targets coupled to Conan\n"
@@ -89,12 +91,12 @@ cmake --build .
 popd
 
 # TODO: Build consumer against Conan linked libskeleton and apt installed dependencies (not working yet)
-#sudo apt install -y $APT_PACKAGES
-#conan_uninstall
-#conan search
-#mkcd build2
-#cmake .. -DCMAKE_BUILD_TYPE=Debug
-#cmake --build .
-#./skeletonconsumer
+sudo apt install -y $APT_PACKAGES
+conan_uninstall
+conan search
+mkcd build2
+cmake .. -DCMAKE_BUILD_TYPE=Debug
+cmake --build .
+./skeletonconsumer
 
 revert_conan_uninstall
