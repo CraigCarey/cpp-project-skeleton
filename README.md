@@ -50,11 +50,11 @@ conan install . -s build_type=Release --install-folder=cmake-build-release --bui
 #### Building libskeleton
 ```bash
 # Linux & MacOS
-cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
+cmake .. -DCMAKE_BUILD_TYPE=Debug -DUSE_CONAN_PACKAGE=True
 cmake --build . --parallel 2
 
 # Windows
-cmake .. -DBUILD_TEST=TRUE -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 16"
+cmake .. -DCMAKE_BUILD_TYPE=Debug -G "Visual Studio 16" -DUSE_CONAN_PACKAGE=True
 cmake --build . --config Release --parallel 2
 ```
 
@@ -77,7 +77,7 @@ cd consumer
 mkdir build && cd build
 
 # Linux & MacOS
-cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
+cmake .. -DCMAKE_BUILD_TYPE=Debug -DUSE_CONAN_PACKAGE=True
 cmake --build . --parallel 2
 
 # Windows

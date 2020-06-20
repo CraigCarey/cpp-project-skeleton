@@ -31,18 +31,6 @@ add_library(${LIB_SKELETON} src/skeleton.cpp)
 # Add an alias so that library can be used inside the build tree, e.g. when testing
 add_library(Skeleton::Skeleton ALIAS ${LIB_SKELETON})
 
-# Add directories to the target
-# PRIVATE and PUBLIC items will populate the INCLUDE_DIRECTORIES property of target
-# PUBLIC and INTERFACE items will populate the INTERFACE_INCLUDE_DIRECTORIES property of target
-target_include_directories(${LIB_SKELETON}
-    PUBLIC
-        $<INSTALL_INTERFACE:include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-#        $<INSTALL_INTERFACE:${Boost_INCLUDE_DIRS}> # TODO: results in hardcoded path in INTERFACE_INCLUDE_DIRECTORIES.
-    PRIVATE
-        $<BUILD_INTERFACE:${Boost_INCLUDE_DIRS}>
-)
-
 target_compile_options(${LIB_SKELETON}
     PRIVATE
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:-Wall -Wextra -Wpedantic>
@@ -58,6 +46,15 @@ target_sources(${LIB_SKELETON}
     PRIVATE
         ${src_files}
         ${header_files}
+)
+
+# Add directories to the target
+# PRIVATE and PUBLIC items will populate the INCLUDE_DIRECTORIES property of target
+# PUBLIC and INTERFACE items will populate the INTERFACE_INCLUDE_DIRECTORIES property of target
+target_include_directories(${LIB_SKELETON}
+        PUBLIC
+        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
 target_link_libraries(${LIB_SKELETON}
