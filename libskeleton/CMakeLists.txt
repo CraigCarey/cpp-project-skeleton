@@ -37,9 +37,9 @@ add_library(Skeleton::Skeleton ALIAS ${LIB_SKELETON})
 target_include_directories(${LIB_SKELETON}
     PUBLIC
         $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 #        $<INSTALL_INTERFACE:${Boost_INCLUDE_DIRS}> # TODO: results in hardcoded path in INTERFACE_INCLUDE_DIRECTORIES.
     PRIVATE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${Boost_INCLUDE_DIRS}>
 )
 
@@ -61,9 +61,11 @@ target_sources(${LIB_SKELETON}
 )
 
 target_link_libraries(${LIB_SKELETON}
-	INTERFACE
-        Boost::regex
+	PUBLIC
+        Boost::boost
         Boost::chrono
+    PRIVATE
+        Boost::regex
 )
 
 #print_target_properties(${LIB_SKELETON})
