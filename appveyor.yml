@@ -18,6 +18,7 @@ build_script:
   - cmd: mkdir build
   - cmd: cd build
   - cmd: conan install ../conan/ --build missing
+  - cmd: type conan_paths.cmake
   - cmd: cmake .. -DUSE_CONAN_PACKAGE=True -G "Visual Studio 16"
   - cmd: cmake --build . --config Release --parallel 2
   - cmd: ctest --parallel 2

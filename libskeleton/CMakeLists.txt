@@ -14,7 +14,11 @@ set(CMAKE_DEBUG_POSTFIX "-d")
 
 if(USE_CONAN_PACKAGE)
     include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
+    set(BOOST_ROOT ${CONAN_BOOST_ROOT})
+    set(Boost_NO_BOOST_CMAKE ON)
 endif(USE_CONAN_PACKAGE)
+
+message("BOOST_ROOT: " ${CONAN_BOOST_ROOT})
 
 find_package(GTest REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system chrono)

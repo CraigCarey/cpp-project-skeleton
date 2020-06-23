@@ -42,10 +42,6 @@ set -u
 
 readonly APT_PACKAGES="libboost-all-dev libgtest-dev libbz2-dev"
 
-# TODO: Remove any apt install packages that may confuse things - CMake finds system boost without this
-sudo apt purge -y libboost-all-dev libboost-dev
-sudo apt autoremove -y
-
 # Remove old install
 sudo rm -rf /usr/local/include/skeleton/ /usr/local/lib/libskeleton* /usr/local/lib/cmake/Skeleton/
 
