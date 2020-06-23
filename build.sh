@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eux
+set -ex
 
 exec > >(tee "build.log") 2>&1
 date
@@ -12,7 +12,7 @@ function mkcd()
 
 function revert_conan_uninstall()
 {
-  # revert simulated uninstall (if present)
+  # revert simulated uninstall
   if [[ -d ~/.conan/data.bk ]]; then
     mv ~/.conan/data.bk ~/.conan/data
   fi
@@ -20,16 +20,30 @@ function revert_conan_uninstall()
 
 function conan_uninstall()
 {
-  mv ~/.conan/data ~/.conan/data.bk # simulate uninstall to save time
+  # simulate uninstall to save time
+  if [[ -d ~/.conan/data ]]; then
+    mv ~/.conan/data ~/.conan/data.bk
+  fi
 }
 
 # Make the script agnostic to where its called from
 pushd "$(dirname "$(readlink -f "$0")")" > /dev/null
 
+readonly CONAN_DIR="../conan/"
+conan_profile="${CONAN_DIR}/profiles/gcc"
+
+if [[ $1 == "clang" || $CC == "*clang" || $CXX == "*clang++" ]]; then
+  export CC=${CC:-clang}
+  export CXX=${CXX:-clang++}
+  conan_profile="${CONAN_DIR}/profiles/clang"
+fi
+
+set -u
+
 readonly APT_PACKAGES="libboost-all-dev libgtest-dev libbz2-dev"
 
-# TODO: Remove any apt install packages that may confuse things
-sudo apt remove -y $APT_PACKAGES
+# TODO: Remove any apt install packages that may confuse things - CMake finds system boost without this
+sudo apt purge -y libboost-all-dev libboost-dev
 sudo apt autoremove -y
 
 # Remove old install
@@ -41,7 +55,7 @@ revert_conan_uninstall
 pushd libskeleton
 mkcd build
 
-conan install .. --build=missing -r=artifactory # conan remote list
+conan install "${CONAN_DIR}" --build=missing -pr="$conan_profile" -r=artifactory # conan remote list
 
 cmake .. -DUSE_CONAN_PACKAGE=True -DCMAKE_BUILD_TYPE=Debug
 cmake --build . --parallel 2
@@ -62,38 +76,34 @@ make clean
 
 popd
 
-# Build without Conan packages (just to prove it works, doesn't install)
-sudo apt install -y $APT_PACKAGES
-mkcd build2
+## Build without Conan packages (just to prove it works, doesn't install)
+#sudo apt install -y $APT_PACKAGES
+#conan_uninstall
+#mkcd build2
 
-cmake ..
-cmake --build . --parallel 2
-ctest
-make clean
-
-if grep -ir conan SkeletonTargets.cmake; then
-  printf "ERROR: Targets coupled to Conan\n"
-  exit 1
-fi
-
-revert_conan_uninstall
-
-popd
-popd
-
-# Build consumer against Conan linked libskeleton and Conan installed dependencies
-pushd consumer
-mkcd build
-cmake .. -DCMAKE_BUILD_TYPE=Debug
-cmake --build .
-./skeletonconsumer
+#cmake ..
+#cmake --build . --parallel 2
+#ctest
+#make clean
+#popd
+#
+#if grep -ir conan SkeletonTargets.cmake; then
+#  printf "ERROR: Targets coupled to Conan\n"
+#  exit 1
+#fi
+#
+#revert_conan_uninstall
+#
 
 popd
 
-# TODO: Build consumer against Conan linked libskeleton and apt installed dependencies (not working yet)
+# Build consumer against Conan linked libskeleton and apt installed dependencies
+# TODO: doesn't work with clang due to boost::regex linker errors
 sudo apt install -y $APT_PACKAGES
 conan_uninstall
 conan search
+
+pushd consumer
 mkcd build2
 cmake .. -DCMAKE_BUILD_TYPE=Debug
 cmake --build .

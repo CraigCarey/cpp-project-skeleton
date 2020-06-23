@@ -13,17 +13,11 @@ set(CMAKE_DEBUG_POSTFIX "-d")
 #include(${CMAKE_CURRENT_LIST_DIR}/cmake/print_target_properties.cmake)
 
 if(USE_CONAN_PACKAGE)
-    # Using the "cmake_find_package" generator
-#   set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_MODULE_PATH})
-#   set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_PREFIX_PATH})
-
-    #: Using the "cmake_paths" generator
     include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
-
 endif(USE_CONAN_PACKAGE)
 
 find_package(GTest REQUIRED)
-find_package(Boost REQUIRED COMPONENTS regex chrono)
+find_package(Boost REQUIRED COMPONENTS system regex chrono)
 
 set(LIB_SKELETON "skeleton")
 add_library(${LIB_SKELETON} src/skeleton.cpp)

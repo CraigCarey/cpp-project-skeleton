@@ -40,7 +40,7 @@ conan profile update settings.compiler.libcxx=libstdc++11 default  # Sets libcxx
 ```bash
 cd libskeleton
 mkdir build && cd build
-conan install .. --build missing
+conan install ../conan/ --build missing -pr=../conan/profiles/gcc
 
 # alternatively...
 conan install . -s build_type=Debug --install-folder=cmake-build-debug --build missing
