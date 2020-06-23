@@ -76,29 +76,27 @@ make clean
 
 popd
 
-## Build without Conan packages (just to prove it works, doesn't install)
-#sudo apt install -y $APT_PACKAGES
-#conan_uninstall
-#mkcd build2
+# Build without Conan packages (just to prove it works, doesn't install)
+sudo apt install -y $APT_PACKAGES
+conan_uninstall
+mkcd build2
 
-#cmake ..
-#cmake --build . --parallel 2
-#ctest
-#make clean
-#popd
-#
-#if grep -ir conan SkeletonTargets.cmake; then
-#  printf "ERROR: Targets coupled to Conan\n"
-#  exit 1
-#fi
-#
-#revert_conan_uninstall
-#
+cmake ..
+cmake --build . --parallel 2
+ctest
+make clean
+popd
+
+if grep -ir conan SkeletonTargets.cmake; then
+  printf "ERROR: Targets coupled to Conan\n"
+  exit 1
+fi
+
+revert_conan_uninstall
 
 popd
 
 # Build consumer against Conan linked libskeleton and apt installed dependencies
-# TODO: doesn't work with clang due to boost::regex linker errors
 sudo apt install -y $APT_PACKAGES
 conan_uninstall
 conan search

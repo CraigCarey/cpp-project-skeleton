@@ -17,7 +17,7 @@ if(USE_CONAN_PACKAGE)
 endif(USE_CONAN_PACKAGE)
 
 find_package(GTest REQUIRED)
-find_package(Boost REQUIRED COMPONENTS system regex chrono)
+find_package(Boost REQUIRED COMPONENTS system chrono)
 
 set(LIB_SKELETON "skeleton")
 add_library(${LIB_SKELETON} src/skeleton.cpp)
@@ -55,8 +55,6 @@ target_link_libraries(${LIB_SKELETON}
 	PUBLIC
         Boost::boost
         Boost::chrono
-    PRIVATE
-        Boost::regex
 )
 
 #print_target_properties(${LIB_SKELETON})

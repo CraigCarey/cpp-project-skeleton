@@ -15,7 +15,7 @@ install:
 script:
   - cd libskeleton/
   - mkdir build && cd build/
-  - conan install .. --build missing
+  - conan install ../conan/ --build missing -r artifactory
   - cmake .. -DUSE_CONAN_PACKAGE=True -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
   - cmake --build . --parallel 2
   - ctest --parallel 2
