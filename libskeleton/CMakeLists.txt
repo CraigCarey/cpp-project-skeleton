@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 project(libskeleton VERSION 1.2.3 LANGUAGES CXX)
 
+set(VERBOSE ON)
+set(CMAKE_FIND_DEBUG_MODE ON)
+
 ##############################################
 # Building & Testing
 
@@ -18,13 +21,19 @@ if(USE_CONAN_PACKAGE)
     set(Boost_NO_BOOST_CMAKE ON)
 endif(USE_CONAN_PACKAGE)
 
-message("BOOST_ROOT: " ${CONAN_BOOST_ROOT})
-
 find_package(GTest REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system chrono)
+find_package(Poco REQUIRED COMPONENTS Foundation)
+
+if(USE_CONAN_PACKAGE)
+    add_library(PocoWorkaround INTERFACE)
+    target_link_libraries(PocoWorkaround INTERFACE Poco::Poco)
+    set_target_properties(PocoWorkaround PROPERTIES EXPORT_NAME Poco::Foundation)
+    add_library(Poco::Foundation ALIAS PocoWorkaround)
+endif(USE_CONAN_PACKAGE)
 
 set(LIB_SKELETON "skeleton")
-add_library(${LIB_SKELETON} src/skeleton.cpp)
+add_library(${LIB_SKELETON} SHARED src/skeleton.cpp) # TODO: must be shared to avoid exporting PocoWorkaround
 
 # Add an alias so that library can be used inside the build tree, e.g. when testing
 add_library(Skeleton::Skeleton ALIAS ${LIB_SKELETON})
@@ -33,8 +42,6 @@ target_compile_options(${LIB_SKELETON}
     PRIVATE
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:-Wall -Wextra -Wpedantic>
 )
-
-#set_target_properties(${LIB_SKELETON} PROPERTIES LINK_FLAGS_RELEASE -s) # TODO: doesn't work with static libs or Windows
 
 # Add sources to the library
 # Header files are added only so that they appear in IDEs such as Visual Studio etc
@@ -57,8 +64,9 @@ target_include_directories(${LIB_SKELETON}
 
 target_link_libraries(${LIB_SKELETON}
 	PUBLIC
-        Boost::boost
         Boost::chrono
+    PRIVATE
+        Poco::Foundation
 )
 
 #print_target_properties(${LIB_SKELETON})
@@ -117,7 +125,7 @@ configure_package_config_file(
 export(
     EXPORT SkeletonTargets
     FILE ${CMAKE_CURRENT_BINARY_DIR}/SkeletonTargets.cmake
-NAMESPACE Skeleton::
+    NAMESPACE Skeleton::
 )
 
 # Install the config, configversion and dependency find modules
@@ -143,8 +151,7 @@ set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}.${CMake_VERSION_PATCH}")
-set(CPACK_STRIP_FILES "libskeleton.a") # TODO: doesn't work with static libs
-set(CPACK_SOURCE_STRIP_FILES "")
+set(CPACK_SOURCE_STRIP_FILES "") # TODO: ensure stripping works
 
 if (WIN32)
     set(CPACK_GENERATOR "ZIP;") # TODO: WIX

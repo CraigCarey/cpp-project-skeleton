@@ -16,7 +16,7 @@ protected:
 TEST_F(TestSkeleton, TestSkeletonMD5)
 {
     boost::optional<std::string> md5 = skeleton::get_md5_sum();
-    auto md5_gt{"d41d8cd98f00b204e9800998ecf8427e"};
+    auto md5_gt{"c3fcd3d76192e4007dfb496cca67e13b"};
 
     ASSERT_EQ(*md5, md5_gt);
 }

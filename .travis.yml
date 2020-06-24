@@ -23,7 +23,8 @@ install:
 script:
   - cd libskeleton/
   - mkdir build && cd build/
-  - conan install ../conan/ --build missing -r artifactory
+  - conan install ../conan/ --build missing
+  - rm FindBoost.cmake # TODO: fix this hacky workaround...
   - cmake .. -DUSE_CONAN_PACKAGE=True -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
   - cmake --build . --parallel 2
   - ctest --parallel 2
@@ -36,7 +37,7 @@ script:
   - mkdir build && cd build/
   - conan remove -f "*"
   - conan search
-  - sudo apt-get -y install libboost-all-dev libbz2-dev
+  - sudo apt-get -y install libboost-all-dev libbz2-dev libpoco-dev
   - cat /usr/local/lib/cmake/Skeleton/*
   - cmake .. -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
   - cmake --build . --parallel 2

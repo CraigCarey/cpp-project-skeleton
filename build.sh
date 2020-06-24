@@ -40,10 +40,12 @@ fi
 
 set -u
 
-readonly APT_PACKAGES="libboost-all-dev libgtest-dev libbz2-dev"
+readonly APT_PACKAGES="libboost-dev libboost-all-dev libgtest-dev libbz2-dev libpoco-dev"
 
 # Remove old install
 sudo rm -rf /usr/local/include/skeleton/ /usr/local/lib/libskeleton* /usr/local/lib/cmake/Skeleton/
+#sudo apt -y purge $APT_PACKAGES
+#sudo apt -y autoremove
 
 revert_conan_uninstall
 
@@ -51,7 +53,8 @@ revert_conan_uninstall
 pushd libskeleton
 mkcd build
 
-conan install "${CONAN_DIR}" --build=missing -pr="$conan_profile" -r=artifactory # conan remote list
+conan install "${CONAN_DIR}" --build=missing -pr="$conan_profile" -g deploy
+rm FindBoost.cmake # TODO: fix this hacky workaround...
 
 cmake .. -DUSE_CONAN_PACKAGE=True -DCMAKE_BUILD_TYPE=Debug
 cmake --build . --parallel 2
@@ -104,3 +107,5 @@ cmake --build .
 ./skeletonconsumer
 
 revert_conan_uninstall
+
+printf "\n\n Building with and without Conan packages successfully\n"
