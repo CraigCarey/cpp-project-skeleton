@@ -13,8 +13,6 @@ endif (NOT CMAKE_BUILD_TYPE)
 
 set(CMAKE_DEBUG_POSTFIX "-d")
 
-#include(${CMAKE_CURRENT_LIST_DIR}/cmake/print_target_properties.cmake)
-
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 
 if(USE_CONAN_PACKAGE)
@@ -27,15 +25,8 @@ find_package(GTest REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system chrono)
 find_package(Poco REQUIRED COMPONENTS Foundation)
 
-if(USE_CONAN_PACKAGE)
-    add_library(PocoWorkaround INTERFACE)
-    target_link_libraries(PocoWorkaround INTERFACE Poco::Poco)
-    set_target_properties(PocoWorkaround PROPERTIES EXPORT_NAME Poco::Foundation)
-    add_library(Poco::Foundation ALIAS PocoWorkaround)
-endif(USE_CONAN_PACKAGE)
-
 set(LIB_SKELETON "skeleton")
-add_library(${LIB_SKELETON} SHARED src/skeleton.cpp) # TODO: must be shared to avoid exporting PocoWorkaround
+add_library(${LIB_SKELETON} src/skeleton.cpp)
 
 # Add an alias so that library can be used inside the build tree, e.g. when testing
 add_library(Skeleton::Skeleton ALIAS ${LIB_SKELETON})
