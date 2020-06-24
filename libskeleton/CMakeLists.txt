@@ -15,10 +15,12 @@ set(CMAKE_DEBUG_POSTFIX "-d")
 
 #include(${CMAKE_CURRENT_LIST_DIR}/cmake/print_target_properties.cmake)
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
+
 if(USE_CONAN_PACKAGE)
     include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
     set(BOOST_ROOT ${CONAN_BOOST_ROOT})
-    set(Boost_NO_BOOST_CMAKE ON)
+    set(POCO_ROOT ${CONAN_POCO_ROOT})
 endif(USE_CONAN_PACKAGE)
 
 find_package(GTest REQUIRED)
