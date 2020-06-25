@@ -22,4 +22,10 @@ boost::chrono::system_clock::time_point get_sys_clock()
     return boost::chrono::system_clock::now();
 }
 
+cv::Mat get_cv_mat()
+{
+    cv::Mat img(500, 1000, CV_8UC1, cv::Scalar(70));
+    return img;
+}
+
 }  // namespace skeleton

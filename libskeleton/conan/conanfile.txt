@@ -2,6 +2,11 @@
 boost/1.73.0
 gtest/1.10.0
 poco/1.10.1
+opencv/4.3.0@conan/stable
 
 [generators]
 cmake_paths
+
+[options]
+opencv:contrib=True
+opencv:cuda=True

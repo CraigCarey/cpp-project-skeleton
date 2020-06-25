@@ -19,11 +19,13 @@ if(USE_CONAN_PACKAGE)
     include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
     set(BOOST_ROOT ${CONAN_BOOST_ROOT})
     set(POCO_ROOT ${CONAN_POCO_ROOT})
+    set(OPENCV_ROOT ${CONAN_OPENCV_ROOT})
 endif(USE_CONAN_PACKAGE)
 
 find_package(GTest REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system chrono)
 find_package(Poco REQUIRED COMPONENTS Foundation)
+find_package(OpenCV REQUIRED COMPONENTS core)
 
 set(LIB_SKELETON "skeleton")
 add_library(${LIB_SKELETON} src/skeleton.cpp)
@@ -50,7 +52,7 @@ target_sources(${LIB_SKELETON}
 # PRIVATE and PUBLIC items will populate the INCLUDE_DIRECTORIES property of target
 # PUBLIC and INTERFACE items will populate the INTERFACE_INCLUDE_DIRECTORIES property of target
 target_include_directories(${LIB_SKELETON}
-        PUBLIC
+    PUBLIC
         $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
@@ -58,6 +60,7 @@ target_include_directories(${LIB_SKELETON}
 target_link_libraries(${LIB_SKELETON}
 	PUBLIC
         Boost::chrono
+        opencv_core
     PRIVATE
         Poco::Foundation
 )
@@ -66,8 +69,8 @@ target_link_libraries(${LIB_SKELETON}
 
 enable_testing()
 add_executable(skeleton_tester test/skeleton_tester.cpp)
-target_link_libraries(skeleton_tester ${LIB_SKELETON} GTest::GTest)
-target_include_directories(skeleton_tester PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${GTEST_INCLUDE_DIRS})
+target_link_libraries(skeleton_tester ${LIB_SKELETON} GTest::GTest ${OpenCV_LIBS})
+target_include_directories(skeleton_tester PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${GTEST_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
 add_test(Skeleton.Test skeleton_tester)
 
 ##############################################

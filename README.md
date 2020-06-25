@@ -26,6 +26,9 @@ A basic project outline with some helpful tooling:
 #### Installation
 ```bash
 pip install conan
+
+# Required for OpenCV sub deps
+conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
 ```
 
 If you are using GCC compiler >= 5.1, Conan will set the compiler.libcxx to the old ABI for backwards compatibility. You can change this with the following commands:

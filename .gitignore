@@ -5,3 +5,5 @@ bld/
 a.out
 .idea/
 *.log
+*.tar.gz
+*.zip

@@ -3,7 +3,6 @@
 set -eu
 
 readonly SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-
 pushd "$SCRIPT_DIR" > /dev/null
 
 readonly CLANG_FORMAT="$(which clang-format)"
