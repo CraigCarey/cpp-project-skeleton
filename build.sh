@@ -36,6 +36,8 @@ if [[ $1 == "clang" || $CC == "*clang" || $CXX == "*clang++" ]]; then
   export CC=${CC:-clang}
   export CXX=${CXX:-clang++}
   conan_profile="${CONAN_DIR}/profiles/clang"
+elif [[ ! -z $1 ]]; then
+  conan_profile="${CONAN_DIR}/profiles/$1"
 fi
 
 set -u

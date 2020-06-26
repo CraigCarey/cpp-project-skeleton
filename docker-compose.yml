@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  skeleton:
+    image: anvcvsdk
+    security_opt:
+      - seccomp:unconfined
+      - apparmor:unconfined
+    container_name: skeleton
+    ports:
+      - "7776:22"     # ssh
+      - "7777:7777"   # gdb
+    entrypoint: "/usr/sbin/sshd -D"
+    volumes:
+      - ~/.conan/:/root/.conan/
+      - ~/.jfrog/:/root/.jfrog/
+      - .:/root/workspace
+      - /tmp/.X11-unix:/tmp/.X11-unix

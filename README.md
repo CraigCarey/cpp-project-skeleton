@@ -37,6 +37,15 @@ conan profile new default --detect  # Generates default profile detecting GCC an
 conan profile update settings.compiler.libcxx=libstdc++11 default  # Sets libcxx to C++11 ABI
 ```
 
+### Docker Setup
+
+WIP, build is broken in docker atm.
+```bash
+docker build -t skeleton .
+docker-compose up -d
+ssh root@localhost -p 7776 # pw is `root`
+``` 
+
 ### Building, Testing and Installing libskeleton
 
 #### Installing Conan packages
