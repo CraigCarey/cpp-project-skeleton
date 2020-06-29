@@ -7,9 +7,13 @@ RUN set -eu; \
     sudo \
     gdbserver \
     lsb-release \
-    libgtk-3-dev \
-    openssh-server; \
-    rm -rf /var/lib/apt/lists/*
+    openssh-server \
+    build-essential \
+    git \
+    cmake \
+    nano \
+    python3-pip \
+    libssl-dev;
 
 # Enable remote debugging
 RUN set -eu; \
@@ -21,50 +25,8 @@ RUN set -eu; \
 # 22 for ssh server, 7777 for gdb server
 EXPOSE 22 7777
 
-ARG DOWNLOAD_LINK_MKL=http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/16533/l_mkl_2020.1.217.tgz
-ARG INSTALL_DIR_MKL=/opt/intel/mkl
-ARG TMP_DIR_MKL=/tmp/mkl_installer
-
-RUN set -eu; \
-    mkdir -p $TMP_DIR_MKL && cd $TMP_DIR_MKL; \
-    axel -c $DOWNLOAD_LINK_MKL; \
-    tar xf l_mkl*.tgz; \
-    cd l_mkl*/; \
-    sed -i 's/decline/accept/g' silent.cfg; \
-    ./install.sh --silent silent.cfg;
-
-ARG DOWNLOAD_LINK_OV=http://registrationcenter-download.intel.com/akdlm/irc_nas/16670/l_openvino_toolkit_p_2020.3.194.tgz
-ARG INSTALL_DIR_OV=/opt/intel/openvino
-ARG TMP_DIR_OV=/tmp/openvino_installer
-
-RUN set -eu; \
-    mkdir -p $TMP_DIR_OV && cd $TMP_DIR_OV; \
-    axel -c $DOWNLOAD_LINK_OV; \
-    tar xf l_openvino_toolkit*.tgz; \
-    cd l_openvino_toolkit*; \
-    sed -i 's/decline/accept/g' silent.cfg; \
-    ./install.sh -s silent.cfg; \
-    rm -rf $TMP_DIR_OV
-
-RUN set -eu; \
-    ${INSTALL_DIR_OV}/install_dependencies/install_openvino_dependencies.sh
-
-RUN apt-get update && apt-get install python3-pip -y && \
-    pip3 install pyyaml requests && \
-    cd ${INSTALL_DIR_OV}/deployment_tools/tools/model_downloader && \
-    python3 downloader.py --name alexnet
-
-RUN set -eu; \
-    /opt/intel/openvino/deployment_tools/demo/demo_squeezenet_download_convert_run.sh;
-
-RUN set -eu; \
-    apt-get install -y --no-install-recommends \
-    build-essential \
-    git \
-    cmake \
-    nano \
-    python3-pip \
-    libssl-dev;
+ARG TZ="Europe/Belfast"
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ARG CMAKE_VERSION="3.17.3"
 RUN set -eux; \
@@ -76,20 +38,11 @@ RUN set -eux; \
     apt-get purge cmake -y;
 
 RUN set -eux; \
-    ln -sf $(which python3) $(which python); \
-    ln -sf $(which pip3) /usr/bin/pip; \
-    python --version; \
-    pip --version;
+    $(which python3); \
+    ln -sf $(which python3) /usr/bin/python; \
+    ln -sf $(which pip3) /usr/bin/pip;
 
-RUN set -eux; \
-    apt-get install -y libgtest-dev; \
-    cd /usr/src/gtest; \
-    cmake -DCMAKE_BUILD_TYPE=RELEASE .; \
-    make -j $(nproc); \
-    cp libg* /usr/lib/;
-
-ARG TZ="Europe/Belfast"
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN apt-get install -y python3-setuptools
 
 RUN pip install --upgrade pip && pip install --no-cache-dir conan
 

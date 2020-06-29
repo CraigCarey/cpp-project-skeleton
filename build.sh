@@ -83,6 +83,16 @@ popd
 # Build without Conan packages (just to prove it works, doesn't install)
 sudo apt install -y $APT_PACKAGES
 #../scripts/install_opencv.sh
+
+readonly OS_VERSION=$(lsb_release -rs)
+if [[ $OS_VERSION == "18.04" ]]; then
+  pushd /usr/src/gtest;
+  sudo cmake -DCMAKE_BUILD_TYPE=RELEASE .;
+  sudo make -j $(nproc); \
+  sudo cp libg* /usr/lib/;
+  popd
+fi
+
 conan_uninstall
 mkcd build2
 
