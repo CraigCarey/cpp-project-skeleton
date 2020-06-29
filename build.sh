@@ -29,6 +29,10 @@ function conan_uninstall()
 # Make the script agnostic to where its called from
 pushd "$(dirname "$(readlink -f "$0")")" > /dev/null
 
+cmake --version
+gcc --version
+make --version
+
 readonly CONAN_DIR="../conan/"
 conan_profile="${CONAN_DIR}/profiles/gcc"
 

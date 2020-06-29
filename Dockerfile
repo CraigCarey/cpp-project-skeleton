@@ -63,7 +63,17 @@ RUN set -eu; \
     git \
     cmake \
     nano \
-    python3-pip;
+    python3-pip \
+    libssl-dev;
+
+ARG CMAKE_VERSION="3.17.3"
+RUN set -eux; \
+    axel "https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz"; \
+    tar xf "cmake-${CMAKE_VERSION}.tar.gz"; \
+    cd "cmake-${CMAKE_VERSION}"; \
+    cmake .; \
+    make -j $(nproc) install; \
+    apt-get purge cmake -y;
 
 RUN set -eu; \
     ln -sf $(which python3) $(which python); \
