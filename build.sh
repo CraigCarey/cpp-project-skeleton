@@ -46,12 +46,12 @@ fi
 
 set -u
 
-readonly APT_PACKAGES="libboost-all-dev libgtest-dev libbz2-dev libpoco-dev"
+readonly APT_PACKAGES="libboost-all-dev libgtest-dev libbz2-dev libpoco-dev libopencv-dev"
 
 # Remove old install
 sudo rm -rf /usr/local/include/skeleton/ /usr/local/lib/libskeleton* /usr/local/lib/cmake/Skeleton/
-#sudo apt -y purge $APT_PACKAGES
-#sudo apt -y autoremove
+sudo apt -y purge $APT_PACKAGES
+sudo apt -y autoremove
 
 revert_conan_uninstall
 
@@ -102,7 +102,7 @@ revert_conan_uninstall
 popd
 
 # Build consumer against Conan linked libskeleton and apt installed dependencies
-sudo apt install -y $APT_PACKAGES libopencv-dev
+sudo apt install -y $APT_PACKAGES
 #./scripts/install_opencv.sh
 conan_uninstall
 conan search
