@@ -33,9 +33,10 @@ cmake --version
 gcc --version
 make --version
 
+# Different profiles can be selected from ../conan/profiles
+# The default profile used is ~/.conan/profiles/default
 readonly CONAN_DIR="../conan/"
-conan_profile="${CONAN_DIR}/profiles/gcc"
-
+conan_profile="${HOME}/.conan/profiles/default"
 if [[ $1 == "clang" || $CC == "*clang" || $CXX == "*clang++" ]]; then
   export CC=${CC:-clang}
   export CXX=${CXX:-clang++}
@@ -50,8 +51,8 @@ readonly APT_PACKAGES="libboost-all-dev libgtest-dev libbz2-dev libpoco-dev libo
 
 # Remove old install
 sudo rm -rf /usr/local/include/skeleton/ /usr/local/lib/libskeleton* /usr/local/lib/cmake/Skeleton/
-sudo apt -y purge $APT_PACKAGES
-sudo apt -y autoremove
+#sudo apt -y purge $APT_PACKAGES
+#sudo apt -y autoremove
 
 revert_conan_uninstall
 

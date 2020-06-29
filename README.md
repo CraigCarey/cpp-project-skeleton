@@ -27,7 +27,8 @@ A basic project outline with some helpful tooling:
 ```bash
 pip install conan
 
-# Required for OpenCV sub deps
+# Required for OpenCV sub deps 
+# TODO: unless we add libselinux/2.9 to the conanfile, is this a bug worth reporting?
 conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
 ```
 
@@ -35,6 +36,20 @@ If you are using GCC compiler >= 5.1, Conan will set the compiler.libcxx to the 
 ```bash
 conan profile new default --detect  # Generates default profile detecting GCC and sets old ABI
 conan profile update settings.compiler.libcxx=libstdc++11 default  # Sets libcxx to C++11 ABI
+```
+
+Depending on your compiler, getting packages from my personal artifactory may be a lot faster
+```bash
+# View my artifactory @ https://bintray.com/craiganv/cpp-skeleton-repo
+conan remote add artifactory https://api.bintray.com/conan/craiganv/cpp-skeleton-repo
+conan remote list
+conan install .. -r=artifactory
+```
+
+Uploading built packages to my personal artifactory
+```bash
+conan user -p <API key> -r artifactory craiganv
+conan upload "*" -r artifactory --all
 ```
 
 ### Docker Setup
@@ -96,12 +111,4 @@ cmake --build . --parallel 2
 # Windows
 cmake .. -DBUILD_TEST=TRUE -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 16"
 cmake --build . --config Release --parallel 2
-```
-
-#### Getting packages from personal artifactory
-```bash
-# View my artifactory @ https://bintray.com/craiganv/cpp-skeleton-repo
-conan remote add artifactory https://api.bintray.com/conan/craiganv/cpp-skeleton-repo
-conan remote list
-conan install .. -r=artifactory
 ```
