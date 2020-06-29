@@ -102,13 +102,13 @@ revert_conan_uninstall
 popd
 
 # Build consumer against Conan linked libskeleton and apt installed dependencies
-sudo apt install -y $APT_PACKAGES
+sudo apt install -y $APT_PACKAGES libopencv-dev
 #./scripts/install_opencv.sh
 conan_uninstall
 conan search
 
 pushd consumer
-mkcd build2
+mkcd build
 cmake .. -DCMAKE_BUILD_TYPE=Debug
 cmake --build .
 ./skeletonconsumer

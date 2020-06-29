@@ -75,12 +75,22 @@ RUN set -eux; \
     make -j $(nproc) install; \
     apt-get purge cmake -y;
 
-RUN set -eu; \
+RUN set -eux; \
     ln -sf $(which python3) $(which python); \
     ln -sf $(which pip3) /usr/bin/pip; \
     python --version; \
     pip --version;
 
-COPY libskeleton/conan/conanfile.txt /root/
+RUN set -eux; \
+    apt-get install -y libgtest-dev; \
+    cd /usr/src/gtest; \
+    cmake -DCMAKE_BUILD_TYPE=RELEASE .; \
+    make -j $(nproc); \
+    cp libg* /usr/lib/;
+
+ARG TZ="Europe/Belfast"
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN pip install --upgrade pip && pip install --no-cache-dir conan
 
 CMD bash
