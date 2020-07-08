@@ -3,10 +3,18 @@ version: 1.0.{build}
 platform:
   - x64
 
+environment:
+  matrix:
+    - PYTHON: "C:\\Python38"
+      PYTHON_VERSION: "3.8.x"
+      PYTHON_ARCH: "64"
+
 install:
-  - cmd: echo "Downloading conan..."
-  - cmd: set PATH=%PATH%;%PYTHON%/Scripts/
-  - cmd: pip.exe install conan
+  - cmd: SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  - cmd: python --version
+  - cmd: pip --version
+  - cmd: echo "Installing Conan..."
+  - cmd: pip install conan
   - cmd: conan user # Create the conan data directory
   - cmd: conan remote add artifactory https://api.bintray.com/conan/craiganv/cpp-skeleton-repo
   - cmd: conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
@@ -18,7 +26,9 @@ build_script:
   - cmd: cd libskeleton
   - cmd: mkdir build
   - cmd: cd build
-  - cmd: conan install ../conan/ --build missing
+  - cmd: conan install ../conan/ --build=missing
+  - cmd: conan user -p 27a043aba804df92adced3df42da32fedd7abc6e -r artifactory craiganv
+  - cmd: conan upload "*" -r artifactory --all --confirm
   - cmd: cmake .. -DUSE_CONAN_PACKAGE=True -G "Visual Studio 16"
   - cmd: cmake --build . --config Release --parallel 2
   - cmd: ctest --parallel 2
