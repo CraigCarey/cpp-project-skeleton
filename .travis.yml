@@ -20,15 +20,12 @@ install:
     - conan profile new default --detect
     - conan profile update settings.compiler.libcxx=libstdc++11 default
     - conan remote add artifactory https://api.bintray.com/conan/craiganv/cpp-skeleton-repo
-    - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
     - conan remote list
 
 script:
   - cd libskeleton/
   - mkdir build && cd build/
-  - conan install ../conan/ --build=missing
-  - conan user -p 92a3295394eb5c99368e142bf824d4fb5fd287aa -r artifactory craiganv
-  - conan upload "*" -r artifactory --all --confirm
+  - conan install ../conan/ -r=artifactory
   - cmake .. -DUSE_CONAN_PACKAGE=True -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
   - cmake --build . --parallel 2
   - ctest --parallel 2

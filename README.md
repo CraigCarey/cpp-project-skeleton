@@ -49,7 +49,7 @@ conan install .. -r=artifactory
 Uploading built packages to my personal artifactory
 ```bash
 conan user -p <API key> -r artifactory craiganv
-conan upload "*" -r artifactory --all
+conan upload "*" -r artifactory --all --confirm
 ```
 
 ### Docker Setup
