@@ -1,7 +1,18 @@
+include(CMakeFindDependencyMacro)
+
+@PACKAGE_INIT@
+
+set_and_check(SKELETON_INCLUDE_DIR "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@")
+set_and_check(SKELETON_LIB_DIR "@PACKAGE_CMAKE_INSTALL_LIBDIR@")
+
 get_filename_component(SKELETON_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
 include(CMakeFindDependencyMacro)
 
 list(APPEND CMAKE_MODULE_PATH ${SKELETON_CMAKE_DIR})
+
+# These need to be set/unset as per what has been defined in the Library.
+set(OpenCV_STATIC "@OpenCV_STATIC@" CACHE BOOL "For Windows: ON = static library/ OFF = dynamic library")
+set(Boost_USE_STATIC_LIBS "@Boost_USE_STATIC_LIBS@" CACHE BOOL "For Windows: ON = static library/ OFF = dynamic library")
 
 find_dependency(Boost REQUIRED COMPONENTS system chrono)
 find_dependency(Poco REQUIRED COMPONENTS Foundation)

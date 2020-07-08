@@ -24,8 +24,14 @@ if(USE_CONAN_PACKAGE)
 endif(USE_CONAN_PACKAGE)
 
 find_package(GTest REQUIRED)
-find_package(Boost REQUIRED COMPONENTS system chrono)
 find_package(Poco REQUIRED COMPONENTS Foundation)
+
+# This is an example of missing information propagation using cmake_paths generator. This is needed for the Conan package in Windows.
+set(Boost_USE_STATIC_LIBS ON CACHE BOOL "For Windows: ON = static library/ OFF = dynamic library")
+find_package(Boost REQUIRED COMPONENTS system chrono)
+
+# This is an example of missing information propagation using cmake_paths generator. This is needed for the Conan package in Windows.
+set(OpenCV_STATIC ON CACHE BOOL "For Windows: ON = static library/ OFF = dynamic library")
 find_package(OpenCV REQUIRED COMPONENTS core)
 
 set(LIB_SKELETON "skeleton")
